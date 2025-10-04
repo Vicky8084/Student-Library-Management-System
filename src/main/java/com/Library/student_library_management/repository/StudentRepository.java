@@ -29,4 +29,6 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     @Query(nativeQuery = true,value = "select * from student where dept :dept")
     public List<Student> findByDept(String dept);
+
+
 }
