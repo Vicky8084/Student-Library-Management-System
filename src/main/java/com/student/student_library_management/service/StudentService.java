@@ -1,7 +1,5 @@
 package com.student.student_library_management.service;
 import com.student.student_library_management.enums.CardStatus;
-import com.student.student_library_management.enums.Role;
-import com.student.student_library_management.enums.StudentStatus;
 import com.student.student_library_management.exception.DuplicateEmailException;
 import com.student.student_library_management.exception.DuplicateRegistrationNumberException;
 import com.student.student_library_management.exception.StudentNotFoundException;
@@ -9,7 +7,6 @@ import com.student.student_library_management.model.Card;
 import com.student.student_library_management.model.Student;
 import com.student.student_library_management.repository.LibrarianRepository;
 import com.student.student_library_management.repository.StudentRepository;
-import com.student.student_library_management.requestDTO.LibrarianRequestDto;
 import com.student.student_library_management.requestDTO.StudentRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,15 +25,18 @@ public class StudentService {
     StudentRepository studentRepository;
     LibrarianRepository librarianRepository;
     PasswordEncoder passwordEncoder;
+    EmailNotificationService emailNotificationService;
     @Autowired
     public StudentService(CardService cardService,
                           LibrarianRepository librarianRepository,
                           PasswordEncoder passwordEncoder,
-                          StudentRepository studentRepository){
+                          StudentRepository studentRepository,
+                          EmailNotificationService emailNotificationService){
         this.cardService=cardService;
         this.studentRepository=studentRepository;
         this.librarianRepository=librarianRepository;
         this.passwordEncoder=passwordEncoder;
+        this.emailNotificationService=emailNotificationService;
     }
 
     public ResponseEntity saveStudent(StudentRequestDto studentRequestDto){
@@ -74,6 +74,7 @@ public class StudentService {
 
         // Save to database
         Student response = studentRepository.save(student);
+        emailNotificationService.sendStudentRegistrationNotification(response);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     public ResponseEntity<Student> findStudentById(int id){
@@ -107,6 +108,7 @@ public class StudentService {
             student.setSemester(studentRequestDto.getSemester());
             student.setGender(studentRequestDto.getGender());
             student=studentRepository.save(student);
+
             return new ResponseEntity(student,HttpStatus.OK);
         }
         else return new ResponseEntity(HttpStatus.NOT_FOUND);

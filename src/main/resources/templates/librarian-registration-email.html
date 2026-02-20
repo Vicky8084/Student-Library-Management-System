@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Librarian Registration Approval (Responsive)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* reset & base */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        /* outer container becomes truly fluid */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* header gradient */
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            margin: 10px 0 0;
+            font-size: 16px;
+        }
+
+        /* content area with flexible padding */
+        .content {
+            padding: 32px 28px;
+            color: #333333;
+        }
+
+        .content h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .content p {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            color: #4a5568;
+            word-wrap: break-word;
+        }
+
+        /* info card adapts */
+        .info-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* grid becomes stacked on narrow screens, but remains grid otherwise */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .value {
+            color: #4a5568;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #fef3c7;
+            color: #92400e;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+            white-space: nowrap;         /* keep "PENDING ADMIN APPROVAL" on one line */
+        }
+
+        /* button wrapper adapts to small screens */
+        .cta-wrapper {
+            text-align: center;
+            margin: 35px 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            white-space: nowrap;          /* prevent button text from wrapping unnecessarily */
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        }
+
+        .footer {
+            background-color: #f8fafc;
+            padding: 24px;
+            font-size: 13px;
+            color: #64748b;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            word-break: break-word;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+            margin: 20px 0;
+        }
+
+        /* ===== responsive enhancements (keep all original content) ===== */
+        @media screen and (max-width: 480px) {
+            .container {
+                margin: 10px auto;
+                border-radius: 8px;
+                width: calc(100% - 20px);   /* small side margins on very narrow screens */
+            }
+
+            .header {
+                padding: 24px 16px;
+            }
+
+            .header h1 {
+                font-size: 22px;             /* scale down headline */
+            }
+
+            .header p {
+                font-size: 14px;
+            }
+
+            .content {
+                padding: 24px 16px;
+            }
+
+            .content h2 {
+                font-size: 20px;
+            }
+
+            /* make grid vertical on tiny screens for better readability */
+            .info-grid {
+                grid-template-columns: 1fr;   /* stack labels above values */
+                gap: 6px;
+            }
+
+            .label {
+                margin-bottom: 0;
+            }
+
+            /* buttons stack vertically & become full width for easier tapping */
+            .cta-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;              /* keep reasonable touch size */
+                margin: 0;                      /* remove horizontal margin */
+                padding: 14px 20px;
+                box-sizing: border-box;
+                white-space: normal;            /* allow text wrap inside button if needed */
+                word-break: break-word;
+            }
+
+            .status-badge {
+                white-space: normal;            /* badge can wrap if screen extremely small, but it's fine */
+                font-size: 12px;
+            }
+
+            .info-card {
+                padding: 16px;
+            }
+
+            .footer {
+                padding: 20px 16px;
+                font-size: 12px;
+            }
+        }
+
+        /* extra small devices (<=360px) */
+        @media screen and (max-width: 360px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .btn {
+                max-width: 240px;
+            }
+        }
+
+        /* keep hover effect smooth but not sticky on mobile */
+        @media (hover: hover) {
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1>📚 Student Library Management</h1>
+        <p>New Librarian Registration Request</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <h2>👤 Librarian Registration Pending Approval</h2>
+
+        <p>
+            Hello <strong th:text="${adminName}">Admin</strong>,
+        </p>
+
+        <p>
+            A new librarian has registered on the <strong>Library Management System</strong>.
+            Please review the details below and take appropriate action.
+        </p>
+
+        <!-- Librarian Details Card -->
+        <div class="info-card">
+            <h3 style="margin-top:0; color:#2d3748;">📋 Librarian Information</h3>
+
+            <div class="info-grid">
+                <span class="label">Full Name:</span>
+                <span class="value" th:text="${librarianName}">Priya Sharma</span>
+
+                <span class="label">Email:</span>
+                <span class="value" th:text="${librarianEmail}">priya@library.com</span>
+
+                <span class="label">Employee ID:</span>
+                <span class="value" th:text="${employeeId}">LIB20262342</span>
+
+                <span class="label">Mobile:</span>
+                <span class="value" th:text="${mobileNumber}">9876543210</span>
+
+                <span class="label">Joining Date:</span>
+                <span class="value" th:text="${joiningDate}">2026-02-20</span>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <span class="status-badge">⏳ PENDING ADMIN APPROVAL</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons (unchanged structure) -->
+        <div class="cta-wrapper">
+            <a th:href="${approveUrl}" class="btn btn-approve">
+                ✅ Approve Librarian
+            </a>
+
+            <a th:href="${rejectUrl}" class="btn btn-reject">
+                ❌ Reject Librarian
+            </a>
+        </div>
+
+        <div class="divider"></div>
+
+        <p style="font-size: 14px; color: #64748b; text-align: center;">
+            ⏰ If no action is taken within 48 hours, this request will remain pending.
+        </p>
+
+        <p style="margin-top: 25px;">
+            Regards,<br>
+            <strong style="color: #3b82f6;">Library Management System Team</strong>
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2026 Student Library Management System</p>
+        <p>🏛️ Central Library, University Campus</p>
+        <p style="font-size: 12px; margin-top: 10px;">This is an automated email. Please do not reply.</p>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.student.student_library_management.controller;
+package com.student.student_library_management.Controller;
 
 import com.student.student_library_management.requestDTO.AdminLoginDto;
 import jakarta.validation.Valid;
@@ -14,16 +14,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/admin/api")
 public class AdminController {
-
     @Value("${admin.username}")
     private String adminUsername;
-
     @Value("${admin.password}")
     private String adminPassword;
-
     @Value("${admin.email}")
     private String adminEmail;
-
     @Value("${admin.full-name}")
     private String adminFullName;
 
