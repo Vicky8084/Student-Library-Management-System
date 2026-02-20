@@ -1,0 +1,61 @@
+### Application Properties ###
+application.properties
+application-*.properties
+!application-template.properties
+
+### Environment Files ###
+.env
+*.env
+
+### Logs ###
+logs/
+*.log
+
+### Build & Target ###
+target/
+build/
+*.jar
+*.war
+*.ear
+
+### IDE - IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings
+.springBeans
+
+### IDE - VS Code ###
+.vscode/
+*.code-workspace
+
+### IDE - Eclipse ###
+.apt_generated
+.factorypath
+.sts4-cache
+bin/
+
+### IDE - NetBeans ###
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### OS Files ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### Maven ###
+.mvn/
+mvnw
+mvnw.cmd
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Help File ###
+HELP.md
