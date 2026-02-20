@@ -1,15 +1,20 @@
 package com.student.student_library_management.service;
 import com.student.student_library_management.enums.CardStatus;
+import com.student.student_library_management.enums.Role;
+import com.student.student_library_management.enums.StudentStatus;
 import com.student.student_library_management.exception.DuplicateEmailException;
 import com.student.student_library_management.exception.DuplicateRegistrationNumberException;
 import com.student.student_library_management.exception.StudentNotFoundException;
 import com.student.student_library_management.model.Card;
 import com.student.student_library_management.model.Student;
+import com.student.student_library_management.repository.LibrarianRepository;
 import com.student.student_library_management.repository.StudentRepository;
+import com.student.student_library_management.requestDTO.LibrarianRequestDto;
 import com.student.student_library_management.requestDTO.StudentRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,29 +26,55 @@ import static com.student.student_library_management.converter.StudentConverter.
 public class StudentService {
     CardService cardService;
     StudentRepository studentRepository;
+    LibrarianRepository librarianRepository;
+    PasswordEncoder passwordEncoder;
     @Autowired
     public StudentService(CardService cardService,
+                          LibrarianRepository librarianRepository,
+                          PasswordEncoder passwordEncoder,
                           StudentRepository studentRepository){
         this.cardService=cardService;
         this.studentRepository=studentRepository;
+        this.librarianRepository=librarianRepository;
+        this.passwordEncoder=passwordEncoder;
     }
 
     public ResponseEntity saveStudent(StudentRequestDto studentRequestDto){
-        if (studentRepository.existsByEmail(studentRequestDto.getEmail())) {
-            throw new DuplicateEmailException("Email already exists: " + studentRequestDto.getEmail());
+
+        String email=studentRequestDto.getEmail();
+
+        //Checking Both tables for Duplicate email
+        if (studentRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException("Email already exists a Student: " +email);
         }
+        if (librarianRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException("Email already exists a Librarian: " + email);
+        }
+
+        //Checking for Duplicate Registration Number
         if(studentRepository.existsByRegistrationNumber(studentRequestDto.getRegistrationNumber())){
             throw new DuplicateRegistrationNumberException("Registration Number already exists: "+studentRequestDto.getRegistrationNumber());
         }
+
+        //Converting Dto to Entity Table
         Student student=convertRequestDtoIntoStudent(studentRequestDto);
-        Card card=new Card();
+
+        //Password Encrypting
+        String rawPassword=studentRequestDto.getPassword();
+        String cryptedPassword=passwordEncoder.encode(rawPassword);
+        student.setPassword(cryptedPassword);
+
+        // Create and setup card
+        Card card = new Card();
         card.setStatus(CardStatus.ACTIVE);
-        String cardNumber= cardService.generateCardNumber();
+        String cardNumber = cardService.generateCardNumber();
         card.setCardNumber(cardNumber);
         card.setStudent(student);
         student.setCard(card);
+
+        // Save to database
         Student response = studentRepository.save(student);
-        return new ResponseEntity(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     public ResponseEntity<Student> findStudentById(int id){
         Student student = studentRepository.findById(id)

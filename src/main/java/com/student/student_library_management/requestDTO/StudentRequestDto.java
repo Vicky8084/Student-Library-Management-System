@@ -2,6 +2,7 @@ package com.student.student_library_management.requestDTO;
 
 import com.student.student_library_management.enums.BloodGroup;
 import com.student.student_library_management.enums.Gender;
+import com.student.student_library_management.enums.Role;
 import com.student.student_library_management.enums.Semester;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -44,5 +45,15 @@ public class StudentRequestDto {
 
     @NotNull(message = "Gender is Required")
     private Gender gender;
+
+    @NotNull(message = "Password is Required")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
+            message = "Password must contain at least 8 characters, one digit, one uppercase, one lowercase, and one special character")
+    private String password;
+
+    @NotNull(message = "Role is Required")
+    private Role role;
+
+
 
 }

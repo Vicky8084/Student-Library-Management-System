@@ -1,10 +1,7 @@
 package com.student.student_library_management.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.student.student_library_management.enums.BloodGroup;
-import com.student.student_library_management.enums.Gender;
-import com.student.student_library_management.enums.Semester;
-import com.student.student_library_management.enums.StudentStatus;
+import com.student.student_library_management.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +37,10 @@ public class Student {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
     @Column(name = "mobile_number", nullable = false, length = 10)
     private String mobileNumber;
 
@@ -56,6 +57,9 @@ public class Student {
     @Enumerated(EnumType.STRING)
     @Column(name = "blood_group", nullable = false)
     private BloodGroup bloodGroup;
+
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "semester", nullable = false)

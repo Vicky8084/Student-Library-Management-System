@@ -15,6 +15,8 @@ public class StudentConverter {
         student.setBloodGroup(studentRequestDto.getBloodGroup());
         student.setSemester(studentRequestDto.getSemester());
         student.setGender(studentRequestDto.getGender());
+        student.setRole(studentRequestDto.getRole());
+        student.setPassword(studentRequestDto.getPassword());
         return student;
     }
 
